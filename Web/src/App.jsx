@@ -1,19 +1,44 @@
+import { createEffect, createSignal } from "solid-js";
 
 //get input values
 const getWeather = () => {
-  const lat = document.getElementById("LatitudeInput").value;
-  const long = document.getElementById("LongitudeInput").value;
+  if (weatherType() == 1) {
+    const lat = document.getElementById("LatitudeInput").value;
+    const long = document.getElementById("LongitudeInput").value;
+    console.log(lat, long);
+  } else if (weatherType() == 2) {
+    const location = document.getElementById("LocationInput").value;
+    console.log(location);
+  }
 
-  console.log(lat, long);
 };
 
 const radioOnChange = (e) => {
-  const weatherType = e.target.value;
-  console.log(weatherType);
+  setWeatherType(e.target.value);
+  if (weatherType() == 1) {
+    //get weather by lat and long
+    document.getElementById("inputDiv").innerHTML = `
+      <p class="text-center text-slate-200 mb-4">Enter Lat and Long of desired location</p>
+        <div class="flex flex-row items-center justify-center mb-4">
+          <input class="mr-5 ml-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-50" type="text" placeholder="Latitude" id="LatitudeInput" ></input>
+          <input class="mr-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-5" type="text" placeholder="Longitude" id="LongitudeInput"></input>
+        </div>
+    `;
+    //append the input div
+  } else if (weatherType() == 2) {
+    //get weather by location
+    document.getElementById("inputDiv").innerHTML = `
+      <p class="text-center text-slate-200 mb-4">Enter Location of desired location</p>
+        <div class="flex flex-row items-center justify-center mb-4">
+          <input class="mr-5 ml-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-50" type="text" placeholder="Location" id="LocationInput" ></input>
+        </div>
+    `;
+
+  }
 }
 
 //create a use state for the weather type
-const [weatherType, setWeatherType] = useState(1);
+const [weatherType, setWeatherType] = createSignal(1);
 
 function App() {
   return (
@@ -26,10 +51,12 @@ function App() {
         <input class='mr-1 ml-7 dark:text-white' type="radio" id="byLocation" name="weatherType" value="2" onChange={radioOnChange}/>
         <label class='text-slate-200' for="celsius">Get Weather by Location</label>
       </div>
-      <p class="text-center text-slate-200 mb-4">Enter Lat and Long of desired location</p>
-      <div class="flex flex-row items-center justify-center mb-4">
-        <input class="mr-5 ml-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-50" type="text" placeholder="Latitude" id="LatitudeInput" ></input>
-        <input class="mr-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-5" type="text" placeholder="Longitude" id="LongitudeInput"></input>
+      <div id='inputDiv'>
+        <p class="text-center text-slate-200 mb-4">Enter Lat and Long of desired location</p>
+        <div class="flex flex-row items-center justify-center mb-4">
+          <input class="mr-5 ml-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-50" type="text" placeholder="Latitude" id="LatitudeInput" ></input>
+          <input class="mr-5 w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-5" type="text" placeholder="Longitude" id="LongitudeInput"></input>
+        </div>
       </div>
       <div class="flex flex-col items-center justify-center">
         <button class="text-slate-200" onClick={getWeather}>Search</button>
