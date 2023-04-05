@@ -24,7 +24,7 @@ const [weatherType, setWeatherType] = createSignal(1);
 function App() {
   return (
     <div class="bg-slate-900 min-h-screen">
-      <p class="text-center p-2 text-slate-200">Weather App</p>
+      {/* <p class="text-center p-2 text-slate-200">Weather App</p>
       <div class="flex flex-row items-center justify-center mb-4">
         <input class='mr-1 ml-5' type="radio" id="byLatLong" checked='checked' name="weatherType" value="1" onChange={radioOnChange}/>
         <label class='text-slate-200' for="fahrenheit">Get Weather by Lat and Long</label>
@@ -57,7 +57,7 @@ function App() {
       </div>
       <div class="flex flex-col items-center justify-center">
         <button class="text-slate-200" onClick={getWeather}>Search</button>
-      </div>
+      </div> */}
       <Weather />
     </div>
   );
