@@ -1,7 +1,7 @@
 import { debounce } from "@solid-primitives/scheduled";
 import { createEffect, createSignal } from 'solid-js';
 
-const LocationSearch = () => {
+const LocationSearch = (props) => {
     const [latitude, setLatitude] = createSignal('');
     const [longitude, setLongitude] = createSignal('');
     const [search, setSearch] = createSignal('');
@@ -40,6 +40,9 @@ const LocationSearch = () => {
         setLatitude(result.lat);
         setLongitude(result.lon);
         setLocation(`${result.name}, ${result.state}`);
+        if(props.onLocationSelected) {
+            props.onLocationSelected(result.lat, result.lon);
+        }
         setIsOpen(false);
     }
 

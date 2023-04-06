@@ -1,10 +1,16 @@
 import { createEffect, createSignal } from "solid-js";
+import LocationSearch from "./LocationSearch";
 
 const Weather = () => {
     const [location, setLocation] = createSignal("");
     const [forecast, setForecast] = createSignal([]);
     const [lat, setLat] = createSignal(0);
     const [lon, setLon] = createSignal(0);
+
+    const handleLocationSelected = (lat, lon) => {
+        setLat(lat);
+        setLon(lon);
+    }
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -27,20 +33,9 @@ const Weather = () => {
 
     return (
         <div className="flex flex-col items-center justify-center">
-            <form onSubmit={handleSearch} className="mb-8">
-                <div class="flex flex-row items-center justify-center mb-4 gap-4">
-                    <input onChange={(e) => setLat(e.target.value)} class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" placeholder="Latitude" id="LatitudeInput" ></input>
-                    <input onChange={(e) => setLon(e.target.value)} class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" placeholder="Longitude" id="LongitudeInput"></input>
-                </div>
-                <button
-                    type="submit"
-                    className="ml-4 px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                    Search
-                </button>
-            </form>
+            <LocationSearch onLocationSelected={handleLocationSelected} />
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                 {forecast().map((item) => (
                     <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
                         <div className="md:flex">
