@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const giphy = require('giphy-api')("42q5IyMG2hl4kAidTmt7iFPbDXRsaX8k");
+const giphy = require('giphy-api')("gif_key");
 const bodyParser = require('body-parser');
 const PORT = process.env.API_PORT || 3001;
 
