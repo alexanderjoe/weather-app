@@ -41,10 +41,20 @@ api.get('/sevenDay', async (req, res) => {
     }
 });
 
+api.get('/geo', async (req, res) => {
+    const loc = req.query.loc;
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
 
+    try {
+        const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(loc)}&limit=5&appid=${API_KEY}`;
+        const response = await fetch(API_ENDPOINT);
+        const jsonResponse = await response.json();
 
-
-
+        res.json(jsonResponse);
+    } catch (error) {
+        res.status(500).json({ error: "API Error" })
+    }
+});
 
 api.listen(PORT, () => {
     // Use for local testing
