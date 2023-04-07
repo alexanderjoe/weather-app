@@ -2,8 +2,8 @@ import { Route, Routes } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import Error from "./components/Error";
 import Navbar from "./components/Navbar";
-import Weather from "./components/Weather";
-import CurrentWeather from "./components/CurrentWeather";
+import CurrentWeather from "./pages/CurrentWeather";
+import ForecastWeather from "./pages/ForecastWeather";
 
 //get input values
 const getWeather = () => {
@@ -34,7 +34,7 @@ function App() {
       <div>
         <Routes>
           <Route path="/" component={CurrentWeather} />
-          <Route path="/forecast" component={Weather} />
+          <Route path="/forecast" component={ForecastWeather} />
           <Route path="*" component={Error} />
         </Routes>
       </div>
