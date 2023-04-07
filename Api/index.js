@@ -6,6 +6,13 @@ const PORT = process.env.API_PORT || 3001;
 const api = express();
 api.use(bodyParser.json())
 
+api.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next()
+});
+
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
     const lon = req.query.lon;
@@ -34,8 +41,20 @@ api.get('/sevenDay', async (req, res) => {
     }
 });
 
+api.get('/geo', async (req, res) => {
+    const loc = req.query.loc;
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
 
+    try {
+        const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(loc)}&limit=5&appid=${API_KEY}`;
+        const response = await fetch(API_ENDPOINT);
+        const jsonResponse = await response.json();
 
+        res.json(jsonResponse);
+    } catch (error) {
+        res.status(500).json({ error: "API Error" })
+    }
+});
 
 api.listen(PORT, () => {
     // Use for local testing
