@@ -11,9 +11,7 @@ const LocationSearch = (props) => {
     let inputRef = null;
 
     const fetchGeocodeResults = async (query) => {
-        // TODO: replace with call to our own API
-        const API_KEY = 'API_KEY';
-        const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`;
+        const API_ENDPOINT = `http://localhost:3001/geo?loc=${encodeURIComponent(query)}`;
 
         try {
             const response = await fetch(API_ENDPOINT);
