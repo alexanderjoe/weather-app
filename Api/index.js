@@ -1,10 +1,18 @@
 require('dotenv').config();
 const express = require('express');
+const giphy = require('giphy-api')(process.env.GIPHY_KEY);
 const bodyParser = require('body-parser');
 const PORT = process.env.API_PORT || 3001;
 
 const api = express();
 api.use(bodyParser.json())
+
+api.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next()
+});
 
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
@@ -16,7 +24,7 @@ api.get('/current', async (req, res) => {
 
         res.json(jsonResponse);
     } catch (error) {
-        res.status(500).json({error: "API Error"})
+        res.status(500).json({ error: "API Error" })
     }
 });
 
@@ -30,12 +38,36 @@ api.get('/sevenDay', async (req, res) => {
 
         res.json(jsonResponse);
     } catch (error) {
-        res.status(500).json({error: "API Error"})
+        res.status(500).json({ error: "API Error" })
     }
 });
 
+api.get('/gif', async (req, res) => {
+    const desc = req.query.desc;
 
+    if (!desc) {
+        const gif = await giphy.search('rain');
+        res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+    } else {
+        const gif = await giphy.search(desc);
+        res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+    }
+});
 
+api.get('/geo', async (req, res) => {
+    const loc = req.query.loc;
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
+
+    try {
+        const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(loc)}&limit=5&appid=${API_KEY}`;
+        const response = await fetch(API_ENDPOINT);
+        const jsonResponse = await response.json();
+
+        res.json(jsonResponse);
+    } catch (error) {
+        res.status(500).json({ error: "API Error" })
+    }
+});
 
 api.listen(PORT, () => {
     // Use for local testing
