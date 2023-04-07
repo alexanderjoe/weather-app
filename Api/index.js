@@ -50,7 +50,7 @@ api.get('/gif', async (req, res) => {
 
 api.get('/geo', async (req, res) => {
     const loc = req.query.loc;
-    const API_KEY = "API_KEY";
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
 
     try {
         const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(loc)}&limit=5&appid=${API_KEY}`;
