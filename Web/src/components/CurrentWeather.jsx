@@ -5,6 +5,7 @@ const CurrentWeather = () => {
 
     const [lat, setLat] = createSignal(100)
     const [lon, setLon] = createSignal(200)
+    const [image, setImage] = createSignal("")
 
     const [weather, setWeather] = createSignal({
         temp: 0,
@@ -24,12 +25,15 @@ const CurrentWeather = () => {
     }
 
     const fetchWeather = async (lat, lon) => {
+        fetchGif()
         fetch(`http://localhost:3001/current?lat=${lat}&lon=${lon}`)
             .then((response) => response.json())
             .then((data) => {
                 setWeather({temp: convertToFeirnheit(data.current_weather.temperature).toFixed(2), windspd: data.current_weather.windspeed, winddir: data.current_weather.winddirection, weathercode: data.current_weather.weathercode, is_day: data.current_weather.is_day})
             })
     }
+
+
 
     createEffect(() => {
         if (lat() > 90 || lat < -90 || lon() > 180 || lon() < -180) return
@@ -44,6 +48,14 @@ const CurrentWeather = () => {
         }
     }
 
+    const fetchGif = async () => {
+        const gif = await fetch(`http://localhost:3001/gif`)
+            .then((response) => response.json())
+            .then((data) => {
+                setImage(data)
+            })
+
+    }
 
 
 
@@ -53,7 +65,7 @@ const CurrentWeather = () => {
             <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-l mt-2">
                         <div className="md:flex">
                             <div className="md:flex-shrink-0">
-                                <img className="h-48 w-full object-cover md:w-48 mt-8 ml-3" src={"https://static.vecteezy.com/system/resources/thumbnails/009/664/902/small/dark-cloud-raining-free-free-png.png"} alt="weather" />
+                                <img className="h-48 w-full object-cover md:w-48 mt-8 ml-3" src={image()} alt="weather" />
                             </div>
                             <div className="p-8">
                                 <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold"></div>
