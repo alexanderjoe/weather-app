@@ -6,6 +6,13 @@ const PORT = process.env.API_PORT || 3001;
 const api = express();
 api.use(bodyParser.json())
 
+api.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next()
+});
+
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
     const lon = req.query.lon;
@@ -33,6 +40,8 @@ api.get('/sevenDay', async (req, res) => {
         res.status(500).json({error: "API Error"})
     }
 });
+
+
 
 
 
