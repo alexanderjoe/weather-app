@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const giphy = require('giphy-api')("42q5IyMG2hl4kAidTmt7iFPbDXRsaX8k");
 const bodyParser = require('body-parser');
 const PORT = process.env.API_PORT || 3001;
 
@@ -41,9 +42,15 @@ api.get('/sevenDay', async (req, res) => {
     }
 });
 
+api.get('/gif', async (req, res) => {
+    const gif = await giphy.search('rain');
+    res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+
+});
+
 api.get('/geo', async (req, res) => {
     const loc = req.query.loc;
-    const API_KEY = process.env.OPENWEATHER_API_KEY;
+    const API_KEY = "8d6d13e40f9d14b71a10a9bb058e1eae";
 
     try {
         const API_ENDPOINT = `http://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(loc)}&limit=5&appid=${API_KEY}`;
