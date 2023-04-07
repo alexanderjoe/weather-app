@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import LocationSearch from "../components/LocationSearch";
-import { convertToFixed, getWeatherIcon } from "../lib/weatherutils";
 import weathercodes from "../lib/weathercodes.json";
+import { convertToFixed, getWeatherIcon } from "../lib/weatherutils";
 
 const ForecastWeather = () => {
     const [forecast, setForecast] = createSignal([]);

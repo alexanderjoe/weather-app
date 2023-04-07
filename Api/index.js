@@ -24,7 +24,7 @@ api.get('/current', async (req, res) => {
 
         res.json(jsonResponse);
     } catch (error) {
-        res.status(500).json({error: "API Error"})
+        res.status(500).json({ error: "API Error" })
     }
 });
 
@@ -38,14 +38,14 @@ api.get('/sevenDay', async (req, res) => {
 
         res.json(jsonResponse);
     } catch (error) {
-        res.status(500).json({error: "API Error"})
+        res.status(500).json({ error: "API Error" })
     }
 });
 
 api.get('/gif', async (req, res) => {
     const desc = req.query.desc;
 
-    if(!desc) {
+    if (!desc) {
         const gif = await giphy.search('rain');
         res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
     } else {

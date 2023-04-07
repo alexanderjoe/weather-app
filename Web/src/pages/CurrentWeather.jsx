@@ -1,6 +1,6 @@
-import { createEffect, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import LocationSearch from "../components/LocationSearch";
-import { convertToFeirnheit, getWeatherIcon, checkTimeOfDay, getWeatherDesc } from "../lib/weatherutils";
+import { checkTimeOfDay, convertToFeirnheit, getWeatherDesc, getWeatherIcon } from "../lib/weatherutils";
 
 const CurrentWeather = () => {
     const [image, setImage] = createSignal("");
