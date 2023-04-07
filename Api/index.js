@@ -43,9 +43,15 @@ api.get('/sevenDay', async (req, res) => {
 });
 
 api.get('/gif', async (req, res) => {
-    const gif = await giphy.search('rain');
-    res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+    const desc = req.query.desc;
 
+    if(!desc) {
+        const gif = await giphy.search('rain');
+        res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+    } else {
+        const gif = await giphy.search(desc);
+        res.json(gif.data[Math.floor(Math.random() * 5)].images.fixed_height.url);
+    }
 });
 
 api.get('/geo', async (req, res) => {
