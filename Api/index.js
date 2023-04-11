@@ -1,11 +1,16 @@
-require('dotenv').config();
-const express = require('express');
-const giphy = require('giphy-api')(process.env.GIPHY_KEY);
-const bodyParser = require('body-parser');
+import express from 'express';
+import dotenv from 'dotenv';
+import giphy from 'giphy-api';
+import bodyParser from 'body-parser';
+
+dotenv.config();
 const PORT = process.env.API_PORT || 3001;
 
 const api = express();
 api.use(bodyParser.json())
+
+import PocketBase from 'pocketbase';
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 api.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
