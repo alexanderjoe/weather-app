@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "API side of our weather app.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
