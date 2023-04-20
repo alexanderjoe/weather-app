@@ -4,6 +4,7 @@ import Error from "./components/Error";
 import Navbar from "./components/Navbar";
 import CurrentWeather from "./pages/CurrentWeather";
 import ForecastWeather from "./pages/ForecastWeather";
+import LoginPage from "./pages/LoginPage";
 
 //get input values
 const getWeather = () => {
@@ -33,8 +34,9 @@ function App() {
       </div>
       <div>
         <Routes>
-          <Route path="/" component={CurrentWeather} />
+          <Route path="/current" component={CurrentWeather} />
           <Route path="/forecast" component={ForecastWeather} />
+          <Route path="/" component={LoginPage} />
           <Route path="*" component={Error} />
         </Routes>
       </div>
