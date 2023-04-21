@@ -1,10 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import giphy from 'giphy-api';
+import giphyclient from 'giphy-api';
 import bodyParser from 'body-parser';
 
 dotenv.config();
 const PORT = process.env.API_PORT || 3001;
+
+const giphy = new giphyclient(process.env.GIPHY_KEY);
 
 const api = express();
 api.use(bodyParser.json())
