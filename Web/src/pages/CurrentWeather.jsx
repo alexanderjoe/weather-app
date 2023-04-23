@@ -30,7 +30,7 @@ const CurrentWeather = () => {
     }
 
     return (
-        <>
+        <div className="flex flex-col items-center justify-center">
             <LocationSearch onLocationSelected={handleLocationSelected} />
             <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-l mt-2">
                 {ready() && (
@@ -49,7 +49,7 @@ const CurrentWeather = () => {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }
 
