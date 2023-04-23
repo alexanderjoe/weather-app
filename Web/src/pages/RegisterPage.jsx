@@ -15,15 +15,24 @@ const RegisterPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const response = await fetch('/register', {
+        const response = await fetch('http://localhost:3001/auth/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username: username(), password: password() })
+            body: JSON.stringify({
+                username: username(),
+                password: password(),
+                location: {
+                    lat: latitude(),
+                    lon: longitude(),
+                    name: location()
+                }
+            })
         })
+
         if (response.ok) {
-            navigate('/login')
+            navigate('/')
         } else {
             setError(true)
             console.log('Error')
@@ -41,7 +50,7 @@ const RegisterPage = () => {
         <div class="flex flex-col items-center justify-center h-screen bg-slate-900">
             {error() && (
                 <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
-                <p>Error Registering Account</p>
+                    <p>Error Registering Account</p>
                 </div>
             )}
             <div class="bg-slate-800 p-10 rounded-lg shadow-lg w-[350px]">
