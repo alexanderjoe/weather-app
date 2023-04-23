@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import giphyclient from 'giphy-api';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 dotenv.config();
 const PORT = process.env.API_PORT || 3001;
@@ -12,16 +13,20 @@ const giphy = new giphyclient(process.env.GIPHY_KEY);
 const api = express();
 api.use(bodyParser.json());
 api.use(cookieParser());
+api.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
-api.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next()
-});
+// api.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     next()
+// });
 
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
@@ -123,7 +128,7 @@ api.post('/auth/login', async (req, res) => {
         })
         const authData = await req.json();
 
-        res.cookie('token', authData.token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
+        res.cookie('token', authData.token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7, secure: false, sameSite: 'lax' });
         res.status(200).json(authData);
     } catch (error) {
         if (error.response !== undefined) {
@@ -131,6 +136,16 @@ api.post('/auth/login', async (req, res) => {
         }
         res.status(500).json({ error: "API Error" });
     }
+});
+
+api.get('/auth/verify', async (req, res) => {
+    if (req.method !== 'GET') return res.status(405).json({ error: "Method Not Allowed" });
+
+    const token = req.cookies.token;
+
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    res.status(200).json({ message: "Authorized", token: token });
 });
 
 api.listen(PORT, () => {

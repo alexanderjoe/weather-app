@@ -11,7 +11,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('/login', {
+    fetch('/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -19,9 +19,11 @@ const LoginPage = () => {
       body: JSON.stringify({ username: username(), password: password() })
     }).then(response => {
       if (response.ok) {
+        alert('Login successful!');
         // Handle successful login
-        navigate('/current');
+        // navigate('/current');
       } else {
+        alert('Login failed!');
         // Handle login error
         setError(true);
       }
