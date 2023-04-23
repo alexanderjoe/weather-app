@@ -5,8 +5,9 @@ const RegisterPage = () => {
 
     const navigate = useNavigate()
 
-    const [email, setEmail] = createSignal('')
+    const [username, setUsername] = createSignal('')
     const [password, setPassword] = createSignal('')
+    const [error, setError] = createSignal(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -15,11 +16,12 @@ const RegisterPage = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email: email, password: password })
+            body: JSON.stringify({ username: username(), password: password() })
         })
         if (response.ok) {
             navigate('/login')
         } else {
+            setError(true)
             console.log('Error')
         }
     }
@@ -27,22 +29,26 @@ const RegisterPage = () => {
 
     return (
         <div class="flex flex-col items-center justify-center h-screen bg-slate-900">
-
+            {error() && (
+                <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+                <p>Error Registering Account</p>
+                </div>
+            )}
             <div class="bg-slate-800 p-10 rounded-lg shadow-lg w-[350px]">
                 <h1 class="text-3xl text-slate-200 font-bold mb-4">Register</h1>
                 <form class="space-y-6" onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="email" class="block text-slate-200 font-bold mb-2">
-                            Email
+                        <label htmlFor="username" class="block text-slate-200 font-bold mb-2">
+                            Username
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="text"
+                            id="username"
+                            name="username"
                             class="w-full border border-gray-300 p-2 rounded-lg"
-                            placeholder="Enter your email address"
-                            value={email()}
-                            onInput={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your username"
+                            value={username()}
+                            onInput={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div>

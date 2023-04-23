@@ -5,7 +5,7 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const [email, setEmail] = createSignal('');
+  const [username, setUsername] = createSignal('');
   const [password, setPassword] = createSignal('');
   const [error, setError] = createSignal(false);
 
@@ -16,7 +16,7 @@ const LoginPage = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email: email(), password: password() })
+      body: JSON.stringify({ username: username(), password: password() })
     }).then(response => {
       if (response.ok) {
         // Handle successful login
@@ -28,7 +28,7 @@ const LoginPage = () => {
     }).catch(error => {
       // Handle network error
     });
-    console.log('Email:', email());
+    console.log('Email:', username());
     console.log('Password:', password());
   };
 
@@ -36,24 +36,24 @@ const LoginPage = () => {
     <div class="flex flex-col items-center justify-center h-screen bg-slate-900">
       {error() && (
         <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
-          <p>Invalid email or password.</p>
+          <p>Invalid Username or password.</p>
         </div>
       )}
       <div class="bg-slate-800 p-10 rounded-lg shadow-lg w-[350px]">
         <h1 class="text-3xl text-slate-200 font-bold mb-4">Login</h1>
         <form class="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" class="block text-slate-200 font-bold mb-2">
-              Email
+            <label htmlFor="username" class="block text-slate-200 font-bold mb-2">
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
+              type="text"
+              id="username"
+              name="text"
               class="w-full border border-gray-300 p-2 rounded-lg"
-              placeholder="Enter your email address"
-              value={email()}
-              onInput={(e) => setEmail(e.target.value)}
+              placeholder="Enter your username"
+              value={username()}
+              onInput={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>
