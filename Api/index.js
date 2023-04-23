@@ -106,7 +106,20 @@ api.post('/auth/login', async (req, res) => {
     if (!username || !password) return res.status(400).json({ error: "Username and password are required." });
 
     try {
-        const authData = await pb.collection('users').authWithPassword(username, password);
+        const data = {
+            identity: username,
+            password: password,
+        }
+        const req = await fetch('http://127.0.0.1:8090/api/collections/users/auth-with-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        const authData = await req.json();
+
+        res.cookie('token', authData.token, { httpOnly: false, maxAge: 1000 * 60 * 60 * 24 * 7 });
         res.status(200).json(authData);
     } catch (error) {
         if (error.response !== undefined) {
