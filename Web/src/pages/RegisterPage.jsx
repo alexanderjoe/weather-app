@@ -1,5 +1,6 @@
 import { createSignal } from 'solid-js'
 import { useNavigate } from '@solidjs/router'
+import Searchbox from '../components/Searchbox'
 
 const RegisterPage = () => {
 
@@ -8,6 +9,9 @@ const RegisterPage = () => {
     const [username, setUsername] = createSignal('')
     const [password, setPassword] = createSignal('')
     const [error, setError] = createSignal(false)
+    const [latitude, setLatitude] = createSignal('')
+    const [longitude, setLongitude] = createSignal('')
+    const [location, setLocation] = createSignal('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -26,6 +30,12 @@ const RegisterPage = () => {
         }
     }
 
+    const handleLocationSelected = (lat, lon, locationName) => {
+        if (lat > 90 || lat < -90 || lon > 180 || lon < -180) return;
+        setLatitude(lat)
+        setLongitude(lon)
+        setLocation(locationName)
+    }
 
     return (
         <div class="flex flex-col items-center justify-center h-screen bg-slate-900">
@@ -65,6 +75,7 @@ const RegisterPage = () => {
                             onInput={(e) => setPassword(e.target.value)}
                         />
                     </div>
+                    <Searchbox onLocationSelected={handleLocationSelected} />
                     <div>
                         <button
                             type="submit"
