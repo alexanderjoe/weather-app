@@ -2,12 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import giphy from 'giphy-api';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const PORT = process.env.API_PORT || 3001;
 
 const api = express();
-api.use(bodyParser.json())
+api.use(bodyParser.json());
+api.use(cookieParser());
 
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
@@ -119,7 +121,7 @@ api.post('/auth/login', async (req, res) => {
         })
         const authData = await req.json();
 
-        res.cookie('token', authData.token, { httpOnly: false, maxAge: 1000 * 60 * 60 * 24 * 7 });
+        res.cookie('token', authData.token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
         res.status(200).json(authData);
     } catch (error) {
         if (error.response !== undefined) {
