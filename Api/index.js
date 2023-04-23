@@ -1,10 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import giphy from 'giphy-api';
+import giphyclient from 'giphy-api';
 import bodyParser from 'body-parser';
 
 dotenv.config();
 const PORT = process.env.API_PORT || 3001;
+
+const giphy = new giphyclient(process.env.GIPHY_KEY);
 
 const api = express();
 api.use(bodyParser.json())
@@ -71,6 +73,48 @@ api.get('/geo', async (req, res) => {
         res.json(jsonResponse);
     } catch (error) {
         res.status(500).json({ error: "API Error" })
+    }
+});
+
+api.post('/auth/create', async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).json({ error: "Method Not Allowed" });
+
+    const { username, password } = req.body;
+
+    if (!username || !password) return res.status(400).json({ error: "Username and password are required." });
+
+    const data = {
+        username: username,
+        password: password,
+        passwordConfirm: password,
+    };
+
+    try {
+        const record = await pb.collection('users').create(data);
+        res.status(200).json(record);
+    } catch (error) {
+        if (error.response !== undefined) {
+            return res.status(error.response.code).json({ error: error.response.message });
+        }
+        res.status(500).json({ error: "API Error" });
+    }
+});
+
+api.post('/auth/login', async (req, res) => {
+    if (req.method !== 'POST') return res.status(405).json({ error: "Method Not Allowed" });
+
+    const { username, password } = req.body;
+
+    if (!username || !password) return res.status(400).json({ error: "Username and password are required." });
+
+    try {
+        const authData = await pb.collection('users').authWithPassword(username, password);
+        res.status(200).json(authData);
+    } catch (error) {
+        if (error.response !== undefined) {
+            return res.status(error.response.code).json({ error: error.response.message });
+        }
+        res.status(500).json({ error: "API Error" });
     }
 });
 
