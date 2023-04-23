@@ -1,8 +1,13 @@
+import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = createSignal('');
   const [password, setPassword] = createSignal('');
+  const [error, setError] = createSignal(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,8 +20,10 @@ const LoginPage = () => {
     }).then(response => {
       if (response.ok) {
         // Handle successful login
+        navigate('/current');
       } else {
         // Handle login error
+        setError(true);
       }
     }).catch(error => {
       // Handle network error
@@ -27,7 +34,12 @@ const LoginPage = () => {
 
   return (
     <div class="flex flex-col items-center justify-center h-screen bg-slate-900">
-      <div class="bg-slate-800 p-10 rounded-lg shadow-lg">
+      {error() && (
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+          <p>Invalid email or password.</p>
+        </div>
+      )}
+      <div class="bg-slate-800 p-10 rounded-lg shadow-lg w-[350px]">
         <h1 class="text-3xl text-slate-200 font-bold mb-4">Login</h1>
         <form class="space-y-6" onSubmit={handleSubmit}>
           <div>
@@ -65,6 +77,9 @@ const LoginPage = () => {
             >
             Login
             </button>
+          </div>
+          <div class="text-center hover:underline">
+            <a href="/register" class="text-slate-200 mt-4 align">Register here!</a>
           </div>
         </form>
       </div>
