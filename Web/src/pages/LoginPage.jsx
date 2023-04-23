@@ -28,7 +28,7 @@ const LoginPage = () => {
     }).catch(error => {
       // Handle network error
     });
-    console.log('Email:', username());
+    console.log('Username:', username());
     console.log('Password:', password());
   };
 

@@ -6,6 +6,7 @@ import CurrentWeather from "./pages/CurrentWeather";
 import ForecastWeather from "./pages/ForecastWeather";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
 
 //get input values
 const getWeather = () => {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/current" component={CurrentWeather} />
           <Route path="/forecast" component={ForecastWeather} />
           <Route path="/register" component={RegisterPage} />
+          <Route path="/profile" component={ProfilePage} />
           <Route path="/" component={LoginPage} />
           <Route path="*" component={Error} />
         </Routes>
