@@ -19,28 +19,38 @@ const ProfilePage = () => {
         setSave(true);
     }
 
-    const saveButtonClicked = (e) => {
+    const saveButtonClicked = async (e) => {
         e.preventDefault();
         setEdit(true);
         setSave(false);
-        fetch('/api/account/update', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
+        const userRecord = await fetch('/api/account/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                username: username(),
+                location: {
+                    lat: latitude(),
+                    lon: longitude(),
+                    name: location()
                 },
-                credentials: 'include',
-                body: JSON.stringify({
-                    username: username(),
-                    location: {
-                        lat: latitude(),
-                        lon: longitude(),
-                        name: location()
-                    },
-                    userID: userID()
-                })
-            }).then(() => {
-                console.log("Updated user")
+                userID: userID()
             })
+        });
+
+        if (!userRecord.ok) {
+            return;
+        }
+
+        const data = await userRecord.json();
+
+        if(data.error) {
+            return;
+        }
+
+        localStorage.setItem('user', JSON.stringify(data));
     }
 
     const getUserValues = () => {
@@ -53,7 +63,7 @@ const ProfilePage = () => {
     onMount(() => {
         getUserValues()
     })
-        
+
 
     const handleLocationSelected = (lat, lon, locationName) => {
         if (lat > 90 || lat < -90 || lon > 180 || lon < -180) return;
@@ -69,14 +79,14 @@ const ProfilePage = () => {
                 <h1 class="text-3xl text-slate-200 font-bold mb-4">Profile</h1>
                 <form class="space-y-6 flex-row">
                     {edit() && (
-                    <div>
-                        <label htmlFor="username" class="flex text-slate-200 font-bold mb-2">
-                            Username: {username()}
-                        </label>
-                        <label htmlFor="Location" class="block text-slate-200 font-bold mb-2">
-                            Location: {location()}
-                        </label>
-                    </div>
+                        <div>
+                            <label htmlFor="username" class="flex text-slate-200 font-bold mb-2">
+                                Username: {username()}
+                            </label>
+                            <label htmlFor="Location" class="block text-slate-200 font-bold mb-2">
+                                Location: {location()}
+                            </label>
+                        </div>
                     )} {save() && (
                         <div>
                             <label htmlFor="username" class="block text-slate-200 font-bold mb-2">
@@ -91,16 +101,16 @@ const ProfilePage = () => {
                                 placeholder="Enter your username"
                                 value={username()}
                             />
-                            <Searchbox onLocationSelected={handleLocationSelected}/>
+                            <Searchbox onLocationSelected={handleLocationSelected} />
 
-                        </div> 
+                        </div>
                     )}
                     <div>
                         {edit() && (
                             <button onClick={editButtonClicked} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Edit
                             </button>
-                        )} 
+                        )}
                         {save() && (
                             <button onClick={saveButtonClicked} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Save

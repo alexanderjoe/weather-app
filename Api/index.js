@@ -81,8 +81,6 @@ api.put('/account/update', async (req, res) => {
 
     const { username, location, userID} = req.body;
 
-    //console.log(req.body);
-
     if (!username || !location) return res.status(400).json({ error: "Username, password, and location are required." });
 
     const data = {
@@ -90,12 +88,21 @@ api.put('/account/update', async (req, res) => {
         location: JSON.stringify(location),
     };
 
-    console.log(data)
+    const token = req.cookies?.token;
+
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
 
     try {
-        const record = await pb.collection('users').update(userID, data);
+        const request = await fetch(`http://127.0.0.1:8090/api/collections/users/records/${userID}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data),
+        })
+        const record = await request.json();
         res.status(200).json(record);
-
     } catch (error) {
         console.log(error)
         if (error.response !== undefined) {
@@ -142,14 +149,14 @@ api.post('/auth/login', async (req, res) => {
             identity: username,
             password: password,
         }
-        const req = await fetch('http://127.0.0.1:8090/api/collections/users/auth-with-password', {
+        const request = await fetch('http://127.0.0.1:8090/api/collections/users/auth-with-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         })
-        const authData = await req.json();
+        const authData = await request.json();
 
         if(authData?.code) return res.status(authData.code).json({ error: authData.message });
 
