@@ -128,6 +128,8 @@ api.post('/auth/login', async (req, res) => {
         })
         const authData = await req.json();
 
+        if(authData?.code) return res.status(authData.code).json({ error: authData.message });
+
         res.cookie('token', authData.token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7, secure: false, sameSite: 'lax' });
         res.status(200).json(authData);
     } catch (error) {
