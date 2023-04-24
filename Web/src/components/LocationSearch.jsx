@@ -1,5 +1,5 @@
 import { debounce } from "@solid-primitives/scheduled";
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, onMount } from 'solid-js';
 
 const LocationSearch = (props) => {
     const [latitude, setLatitude] = createSignal('');
@@ -44,6 +44,25 @@ const LocationSearch = (props) => {
         setIsOpen(false);
     }
 
+    const getLoggedInUserLocation = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user === null || user === undefined) return;
+        const location = JSON.parse(user.location);
+
+        if (location.lat !== undefined && location.lon !== undefined) {
+            setLatitude(location.lat);
+            setLongitude(location.lon);
+            setLocation(location.name);
+            if (props.onLocationSelected) {
+                props.onLocationSelected(location.lat, location.lon);
+            }
+        }
+    }
+
+    onMount(() => {
+        getLoggedInUserLocation();
+    });
+
     createEffect(() => {
         const handleClickOutside = (e) => {
             if (inputRef && !inputRef.contains(e.target)) {
@@ -53,7 +72,7 @@ const LocationSearch = (props) => {
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    })
+    }, [])
 
     const searchDebounce = debounce(handleSearch, 750);
 

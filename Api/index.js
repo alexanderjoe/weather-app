@@ -21,13 +21,6 @@ api.use(cors({
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
-// api.use(function (req, res, next) {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     next()
-// });
-
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
     const lon = req.query.lon;
@@ -86,14 +79,15 @@ api.get('/geo', async (req, res) => {
 api.post('/auth/create', async (req, res) => {
     if (req.method !== 'POST') return res.status(405).json({ error: "Method Not Allowed" });
 
-    const { username, password } = req.body;
+    const { username, password, location } = req.body;
 
-    if (!username || !password) return res.status(400).json({ error: "Username and password are required." });
+    if (!username || !password || !location) return res.status(400).json({ error: "Username, password, and location are required." });
 
     const data = {
         username: username,
         password: password,
         passwordConfirm: password,
+        location: JSON.stringify(location),
     };
 
     try {
