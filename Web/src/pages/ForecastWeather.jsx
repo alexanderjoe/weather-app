@@ -22,6 +22,7 @@ const ForecastWeather = () => {
             .then((data) => {
                 setForecast(data.daily);
                 setTimes(data.daily.time);
+                setImages([]);
                 Promise.all(data.daily.weathercode.map(async (item) => {
                     const image = await getWeatherIcon(item);
                     setImages((images) => [...images, image]);

@@ -15,7 +15,7 @@ const Navbar = () => {
         </A>
         <div class={`w-full md:block md:w-auto`} id="navbar-default">
           <ul class="flex flex-col p-4 mt-10 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0">
-            <NavbarLink href="/current" linkText="Home" current={location.pathname !== '/current'} />
+            <NavbarLink href="/current" linkText="Current" current={location.pathname !== '/current'} />
             <NavbarLink href="/forecast" linkText="Forecast" current={location.pathname !== '/forecast'} />
             <NavbarLink href="/profile" linkText="Profile" current={location.pathname !== '/profile'} />
           </ul>
