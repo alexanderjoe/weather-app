@@ -1,4 +1,4 @@
-import { Route, Routes } from "@solidjs/router";
+import { Route, Routes, useLocation } from "@solidjs/router";
 import { createSignal } from "solid-js";
 import Error from "./components/Error";
 import Navbar from "./components/Navbar";
@@ -8,32 +8,17 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 
-//get input values
-const getWeather = () => {
-  if (weatherType() == 1) {
-    const lat = document.getElementById("LatitudeInput").value;
-    const long = document.getElementById("LongitudeInput").value;
-    console.log(lat, long);
-  } else if (weatherType() == 2) {
-    const location = document.getElementById("LocationInput").value;
-    console.log(location);
-  }
-
-};
-
-const radioOnChange = (e) => {
-  setWeatherType(e.target.value);
-}
-
-//create a use state for the weather type
-const [weatherType, setWeatherType] = createSignal(1);
-
 function App() {
+  const location = useLocation();
+
+
   return (
     <div class="bg-slate-900 min-h-screen">
-      <div>
-        <Navbar />
-      </div>
+      {!(location.pathname === "/" || location.pathname === "/register") && (
+        <div>
+          <Navbar />
+        </div>
+      )}
       <div>
         <Routes>
           <Route path="/current" component={CurrentWeather} />
