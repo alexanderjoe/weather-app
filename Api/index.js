@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import giphyclient from 'giphy-api';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 dotenv.config();
 const PORT = process.env.API_PORT || 3001;
@@ -9,17 +11,22 @@ const PORT = process.env.API_PORT || 3001;
 const giphy = new giphyclient(process.env.GIPHY_KEY);
 
 const api = express();
-api.use(bodyParser.json())
+api.use(bodyParser.json());
+api.use(cookieParser());
+api.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 import PocketBase from 'pocketbase';
 const pb = new PocketBase('http://127.0.0.1:8090');
 
-api.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next()
-});
+// api.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     next()
+// });
 
 api.get('/current', async (req, res) => {
     const lat = req.query.lat;
@@ -108,7 +115,22 @@ api.post('/auth/login', async (req, res) => {
     if (!username || !password) return res.status(400).json({ error: "Username and password are required." });
 
     try {
-        const authData = await pb.collection('users').authWithPassword(username, password);
+        const data = {
+            identity: username,
+            password: password,
+        }
+        const req = await fetch('http://127.0.0.1:8090/api/collections/users/auth-with-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        const authData = await req.json();
+
+        if(authData?.code) return res.status(authData.code).json({ error: authData.message });
+
+        res.cookie('token', authData.token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7, secure: false, sameSite: 'lax' });
         res.status(200).json(authData);
     } catch (error) {
         if (error.response !== undefined) {
@@ -116,6 +138,16 @@ api.post('/auth/login', async (req, res) => {
         }
         res.status(500).json({ error: "API Error" });
     }
+});
+
+api.get('/auth/verify', async (req, res) => {
+    if (req.method !== 'GET') return res.status(405).json({ error: "Method Not Allowed" });
+
+    const token = req.cookies.token;
+
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    res.status(200).json({ message: "Authorized", token: token });
 });
 
 api.listen(PORT, () => {
