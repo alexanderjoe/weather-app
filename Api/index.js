@@ -79,27 +79,25 @@ api.get('/geo', async (req, res) => {
 api.put('/account/update', async (req, res) => {
     if (req.method !== 'PUT') return res.status(405).json({ error: "Method Not Allowed" });
 
-    const { username, password, location } = req.body;
+    const { username, location, userID} = req.body;
 
-    console.log(req.body);
+    //console.log(req.body);
 
-    if (!username || !password || !location) return res.status(400).json({ error: "Username, password, and location are required." });
+    if (!username || !location) return res.status(400).json({ error: "Username, password, and location are required." });
 
     const data = {
         username: username,
-        password: password,
-        passwordConfirm: password,
         location: JSON.stringify(location),
     };
 
-    console.log(req.cookies)
+    console.log(data)
 
     try {
-        //const record = await pb.collection('users').update(data);
-        //res.status(200).json(record);
-        res.status(200).json(data);
+        const record = await pb.collection('users').update(userID, data);
+        res.status(200).json(record);
 
     } catch (error) {
+        console.log(error)
         if (error.response !== undefined) {
             return res.status(error.response.code).json({ error: error.response.message });
         }
